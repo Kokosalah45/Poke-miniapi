@@ -5,22 +5,23 @@ const pokemonRouter = express.Router();
 const prisma = new PrismaClient();
 
 const cache = {
-  pokemonCount: null,
+  pokemonCount: 1114,
 };
 
 const getPokemonCount = async () => {
   const { pokemonCount } = cache;
 
   if (!pokemonCount) {
-    const {
-      _count: { id },
-    } = await prisma.pokemon.aggregate({
-      _count: {
+    const { id } = await prisma.pokemon.findFirst({
+      select: {
         id: true,
       },
+      orderBy: [{ id: "desc" }],
     });
+
     cache.pokemonCount = id;
   }
+
   return cache.pokemonCount;
 };
 
