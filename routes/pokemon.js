@@ -37,7 +37,14 @@ pokemonRouter.get("/", async (req, res) => {
 pokemonRouter.get("/get-random-pokemons", async (req, res) => {
   const pokemonCount = (await getPokemonCount()) + 1;
   const firstId = getRandomArbitrary(1, pokemonCount);
-  const secondId = getRandomArbitrary(firstId, pokemonCount);
+  let lowerBound = firstId;
+  let upperBound = pokemonCount;
+  if (firstId === pokemonCount - 1) {
+    lowerBound = 0;
+    upperBound = pokemonCount - 1;
+  }
+
+  const secondId = getRandomArbitrary(lowerBound, upperBound);
 
   const pokemons = await prisma.pokemon.findMany({
     where: {
