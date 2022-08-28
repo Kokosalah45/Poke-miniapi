@@ -18,7 +18,7 @@ app.use("/api", apiRouter);
 
 app.get("/", (req, res) => {
   res.setHeader("Content-Type", "text/html");
-  res.sendFile(path.join(__dirname, "../client/index.html"));
+  res.json("hi");
 });
 
 app.listen(3000, () => {
