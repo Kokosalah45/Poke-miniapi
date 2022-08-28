@@ -1,0 +1,58 @@
+generator client {
+  provider        = "prisma-client-js"
+  previewFeatures = ["referentialIntegrity"]
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model keyvalue {
+  id         Int      @id @default(autoincrement())
+  key        String?  @unique @db.VarChar(128)
+  value      String?  @unique @db.VarChar(128)
+  created_at DateTime @default(now()) @db.Timestamptz(6)
+  updated_at DateTime @default(now()) @db.Timestamptz(6)
+}
+
+model pg4e_debug {
+  id         Int       @id @default(autoincrement())
+  query      String?   @db.VarChar(4096)
+  result     String?   @db.VarChar(4096)
+  created_at DateTime? @default(now()) @db.Timestamp(6)
+  neon843    Int?
+}
+
+model pg4e_meta {
+  id         Int       @id @default(autoincrement())
+  keystr     String?   @unique @db.VarChar(128)
+  valstr     String?   @db.VarChar(4096)
+  created_at DateTime? @default(now()) @db.Timestamp(6)
+  updated_at DateTime? @db.Timestamp(6)
+}
+
+/// The underlying table does not contain a valid unique identifier and can therefore currently not be handled by the Prisma Client.
+model pg4e_result {
+  id         Int       @default(autoincrement())
+  link_id    Int?      @unique
+  score      Float?
+  title      String?   @db.VarChar(4096)
+  note       String?   @db.VarChar(4096)
+  debug_log  String?   @db.VarChar(8192)
+  created_at DateTime? @default(now()) @db.Timestamp(6)
+  updated_at DateTime? @db.Timestamp(6)
+
+  @@ignore
+}
+
+model pokemon {
+  id            Int     @id @default(autoincrement())
+  name          String? @db.VarChar(200)
+  img_url       String? @db.VarChar(200)
+  url           String? @db.VarChar(200)
+  voted_for     Int?    @default(0)
+  voted_against Int?    @default(0)
+
+  @@unique([name, img_url, url])
+}
