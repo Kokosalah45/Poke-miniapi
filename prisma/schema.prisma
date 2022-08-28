@@ -48,11 +48,9 @@ model pg4e_result {
 
 model pokemon {
   id            Int     @id @default(autoincrement())
-  name          String? @db.VarChar(200)
-  img_url       String? @db.VarChar(200)
-  url           String? @db.VarChar(200)
+  name          String? @unique @db.VarChar(150)
+  img_url       String? @db.VarChar(150)
+  url           String? @db.VarChar(150)
   voted_for     Int?    @default(0)
   voted_against Int?    @default(0)
-
-  @@unique([name, img_url, url])
 }
