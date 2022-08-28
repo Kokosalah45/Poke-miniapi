@@ -17,10 +17,9 @@ app.use(cors());
 app.use("/api", apiRouter);
 
 app.get("/", (req, res) => {
-  res.setHeader("Content-Type", "text/html");
   res.json("hi");
 });
 
-app.listen(3000, () => {
+app.listen(process.env.PORT || 5000, () => {
   console.log("we listenin baby");
 });
