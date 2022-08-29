@@ -10,7 +10,7 @@ const cache = {
 pokemonRouter.use(express.json());
 pokemonRouter.use(express.urlencoded({ extended: true }));
 
-const getPokemonCount = async () => {
+const getPokemonCount = async (req = null, res = null) => {
   const { pokemonCount } = cache;
 
   if (!pokemonCount) {
@@ -23,14 +23,31 @@ const getPokemonCount = async () => {
 
     cache.pokemonCount = id;
   }
-
+  if (req) {
+    res.json(cache.pokemonCount);
+  }
   return cache.pokemonCount;
 };
 
+pokemonRouter.get("/pokemon-count", getPokemonCount);
+
 pokemonRouter.get("/", async (req, res) => {
+  let { cursor, take } = req.query;
+  cursor = cursor === "0" ? 1 : +cursor;
+  take = +take;
   const [pokemonCount, results] = await Promise.all([
     getPokemonCount(),
-    prisma.pokemon.findMany(),
+    prisma.pokemon.findMany({
+      take: take,
+      skip: cursor === 1 ? undefined : 1, // Skip the cursor
+      cursor: {
+        id: cursor,
+      },
+
+      orderBy: {
+        id: "asc",
+      },
+    }),
   ]);
 
   res.json({ pokemonCount, results });
@@ -68,6 +85,7 @@ pokemonRouter.patch("/vote", async (req, res) => {
   const {
     body: { selectedPokemon, unselectedPokemon },
   } = req;
+
   Promise.allSettled([
     prisma.pokemon.update({
       where: {

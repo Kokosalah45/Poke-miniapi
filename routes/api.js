@@ -6,7 +6,7 @@ const apiRouter = express.Router();
 apiRouter.use("/pokemon", pokemonRouter);
 
 apiRouter.get("/", (req, res) => {
-  res.json("Hi !");
+  res.json("Hi API !");
 });
 
 export default apiRouter;
