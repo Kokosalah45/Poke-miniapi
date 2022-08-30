@@ -33,23 +33,40 @@ pokemonRouter.get("/pokemon-count", getPokemonCount);
 
 pokemonRouter.get("/", async (req, res) => {
   let { cursor, take } = req.query;
-  cursor = cursor === "0" ? 1 : +cursor;
-  take = +take;
+  [cursor, take] = [+cursor, +take];
+  console.log([cursor, take]);
+  const options = {
+    skip: 1,
+    orderBy: {
+      id: "asc",
+    },
+    select: {
+      name: true,
+      img_url: true,
+      voted_for: true,
+      voted_against: true,
+    },
+  };
+  if (!cursor) {
+    options.skip = undefined;
+    options.cursor = {
+      id: 1,
+    };
+  } else {
+    options.cursor = {
+      id: cursor,
+    };
+  }
+
+  if (take) {
+    options.take = +take;
+  }
+
   const [pokemonCount, results] = await Promise.all([
     getPokemonCount(),
-    prisma.pokemon.findMany({
-      take: take,
-      skip: cursor === 1 ? undefined : 1, // Skip the cursor
-      cursor: {
-        id: cursor,
-      },
-
-      orderBy: {
-        id: "asc",
-      },
-    }),
+    prisma.pokemon.findMany(options),
   ]);
-
+  console.log(results);
   res.json({ pokemonCount, results });
 });
 
