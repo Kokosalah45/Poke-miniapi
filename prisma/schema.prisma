@@ -18,3 +18,5 @@ model pokemon {
   voted_for     Int?    @default(0)
   voted_against Int?    @default(0)
 }
+
+//koko
