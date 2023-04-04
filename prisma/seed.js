@@ -19,7 +19,7 @@ const getPokemonImg = async (pokemon) => {
     return back_default;
   }
   if (!!back_shiny) {
-    back_shiny;
+    return back_shiny;
   }
   return null;
 };
