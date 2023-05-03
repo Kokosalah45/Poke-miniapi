@@ -12,7 +12,7 @@ const __dirname = dirname(__filename);
 const app = express();
 app.use(helmet());
 app.use(compression());
-app.use(cors());
+
 
 app.use("/api", apiRouter);
 
